@@ -27,8 +27,8 @@
 import streamlit as st
 import cv2
 import numpy as np
-import tensorflow as tf
-from skimage.feature import graycomatrix, graycoprops
+import joblib
+from keras.models import Sequential, load_model
 from PIL import Image
 
 # --- ฟังก์ชันการทำงานหลักของระบบ ---
@@ -41,14 +41,9 @@ def extract_glcm_features_from_upload(uploaded_image):
     image_batch = np.expand_dims(img_normalized, axis=0)
     return image_batch
 
-def load_model(model_path):
-    # เปลี่ยนจาก model = joblib.load(model_path) เป็นด้านล่างนี้
-    model = tf.keras.models.load_model(model_path, compile=False)
-    return model
 
-# --- การสร้างหน้าเว็บแอปพลิเคชัน (Front-end) ---
 
-# ตั้งค่าหัวข้อและคำอธิบายของหน้าเว็บ
+
 st.set_page_config(page_title="ระบบวินิจฉัยความเสี่ยงมะเร็งผิวหนัง", layout="wide")
 st.title("🔬 ระบบวินิจฉัยความเสี่ยงโรคมะเร็งผิวหนัง (Melanoma) จากภาพไฝ")
 st.write("""
@@ -57,7 +52,7 @@ st.write("""
 """)
 
 # โหลดโมเดล
-MODEL_FILENAME = 'C:\SMTEProJect\plant\Duiran-or-non\model\Duria-or-nonv1.keras'
+MODEL_FILENAME = 'model/Duria-or-nonv1.keras'
 try:
     model = load_model(MODEL_FILENAME)
 except FileNotFoundError:
