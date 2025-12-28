@@ -67,7 +67,7 @@ if uploaded_file is not None:
         with st.spinner('กำลังประมวลผลและวิเคราะห์ภาพ...'):
             # สกัดฟีเจอร์จากภาพ
             features = extract_glcm_features_from_upload(image)
-            prediction = model.predict(future)
+            prediction = model.predict(features)
 
             with col2:
                 st.header("ผลการวินิจฉัย")
