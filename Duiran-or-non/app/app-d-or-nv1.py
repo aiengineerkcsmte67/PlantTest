@@ -12,7 +12,7 @@ import tensorflow as tf
 def extract_glcm_features_from_upload(uploaded_image):
     imggg = np.array(uploaded_image)
     img_rgb = cv2.cvtColor(imggg, cv2.COLOR_BGR2RGB)
-    img_resized = cv2.resize(img_rgb, (128, 128))
+    img_resized = cv2.resize(img_rgb, (224, 224))
     img_normalized = img_resized / 255.0
     image_batch = np.expand_dims(img_normalized, axis=0)
     return image_batch
