@@ -39,7 +39,7 @@ def load_model_for_app():
         tf.keras.layers.Dense(1, activation='sigmoid')
     ])
     
-    model.load_weights('model/Duria-or-nonv1_weights.weights.h5')
+    model.load_weights('Duria-or-nonv1_weights.weights.h5')
     return model
 
 try:
