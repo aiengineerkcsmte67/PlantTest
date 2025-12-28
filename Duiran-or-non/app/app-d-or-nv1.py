@@ -73,10 +73,10 @@ if uploaded_file is not None:
                 st.header("ผลการวินิจฉัย")
                 if prediction[0][0] > 0.5:
                     st.error("ใบไรโช้")
-                    st.info(f"ผลการวินิจฉัยมั่นใจ: {100 - prediction[0][0]*100:.2f}%")
+                    st.info(f"ผลการวินิจฉัยมั่นใจ: {prediction[0][0]*100:.2f}%")
                 else:
                     st.success("ใบทุเรียน")
-                    st.info(f"ผลการวินิจฉัยมั่นใจ: {prediction[0][0]*100:.2f}%")
+                    st.info(f"ผลการวินิจฉัยมั่นใจ: {100 - prediction[0][0]*100:.2f}%")
                     
 else:
     st.info("กรุณาอัปโหลดรูปภาพที่แถบด้านข้างเพื่อเริ่มการวินิจฉัย")
