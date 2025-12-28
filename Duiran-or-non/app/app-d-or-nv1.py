@@ -1,35 +1,10 @@
-# import streamlit as st
-# import cv2
-# import numpy as np
-# import joblib
-# import tensorflow as tf
-
-
-# def extract_features(uploaded_image):
-#     img = image.load_img(uploaded_image, target_size=(224, 224))
-#     img_array = image.img_to_array(img)
-#     img_array = np.expand_dims(img_array, axis=0)
-#     img_array /= 255.0
-#     return img_array
-
-
-# MODEL_FILENAME = 'model/Duria-or-nonv1.keras'
-# model = tf.keras.models.load_model(MODEL_FILENAME)
-
-# image = "testmodel/D1.jpg"
-
-# features = extract_features(image)
-# prediction_probs = model.predict(features)
-# confidence = np.max(prediction_probs) * 100
-
-# print(confidence)
-
 import streamlit as st
 import cv2
 import numpy as np
 import joblib
 from keras.models import Sequential, load_model
 from PIL import Image
+import tensorflow as tf
 
 # --- ฟังก์ชันการทำงานหลักของระบบ ---
 
@@ -44,24 +19,38 @@ def extract_glcm_features_from_upload(uploaded_image):
 
 
 
-st.set_page_config(page_title="ระบบวินิจฉัยความเสี่ยงมะเร็งผิวหนัง", layout="wide")
-st.title("🔬 ระบบวินิจฉัยความเสี่ยงโรคมะเร็งผิวหนัง (Melanoma) จากภาพไฝ")
+st.set_page_config(page_title="ตรวจสอบใบพืชเบื้องต้น", layout="wide")
+st.title("🍀ระบบ01 ตรวจสอบใบพืช🍀")
 st.write("""
-    อัปโหลดภาพถ่ายไฝของคุณ เพื่อให้ปัญญาประดิษฐ์ช่วยประเมินความเสี่ยงเบื้องต้น
-    **คำเตือน:** ผลลัพธ์จากระบบนี้เป็นเพียงการประเมินเบื้องต้นเท่านั้น โปรดปรึกษาแพทย์ผู้เชี่ยวชาญเพื่อการวินิจฉัยที่ถูกต้อง
+    อัปโหลดภาพใบไม้ เพื่อใช้ปัญญาประดิษฐ์ประมวลผล
+    **คำเตือน:** เป็นเพียงการทดสอบเพื่อเป็นส่วนหนึ่งของตรวจพืชทุเรียน
 """)
 
-# โหลดโมเดล
-MODEL_FILENAME = 'model/Duria-or-nonv1.keras'
+def load_model_for_app():
+    base_model = tf.keras.applications.MobileNetV2(
+        input_shape=(224, 224, 3),
+        include_top=False,
+        weights=None 
+    )
+
+    model = tf.keras.Sequential([
+        base_model,
+        tf.keras.layers.GlobalAveragePooling2D(),
+        tf.keras.layers.Dense(1, activation='sigmoid')
+    ])
+    
+    model.load_weights('model\Duria-or-nonv1_weights.weights.h5')
+    return model
+
 try:
-    model = load_model(MODEL_FILENAME)
+    model = load_model_for_app()
 except FileNotFoundError:
-    st.error(f"ไม่พบไฟล์โมเดล '{MODEL_FILENAME}'! กรุณาตรวจสอบว่าได้รันสคริปต์ train_model.py ก่อน")
+    st.error(f"ไม่พบไฟล์โมเดล ! กรุณาตรวจสอบว่าได้รันสคริปต์ train_model.py ก่อน")
     st.stop()
 
-# สร้างส่วนสำหรับอัปโหลดไฟล์ภาพ
+
 st.sidebar.header("อัปโหลดภาพของคุณ")
-uploaded_file = st.sidebar.file_uploader("เลือกไฟล์ภาพไฝ...", type=["jpg", "jpeg", "png"])
+uploaded_file = st.sidebar.file_uploader("เลือกไฟล์ภาพ🍀...", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
     # แสดงภาพที่อัปโหลด
@@ -69,30 +58,23 @@ if uploaded_file is not None:
     col1, col2 = st.columns(2)
     with col1:
         st.header("ภาพที่อัปโหลด")
-        st.image(image, caption="ภาพไฝ", use_column_width=True)
+        st.image(image, caption="ภาพใบพืช🍀", use_column_width=True)
 
     # สร้างปุ่มเพื่อเรียกใช้ฟังก์ชันการวินิจฉัย
     if st.sidebar.button("ทำการวินิจฉัย"):
         with st.spinner('กำลังประมวลผลและวิเคราะห์ภาพ...'):
             # สกัดฟีเจอร์จากภาพ
             features = extract_glcm_features_from_upload(image)
-            
-            # ทำนายผลด้วยโมเดล
-            prediction_proba = model.predict_proba(features)[0]
-            
-            # หาความน่าจะเป็นของคลาส "Melanoma" (สมมติว่าคลาส 1 คือ Melanoma)
-            risk_percentage = prediction_proba[1] * 100
-            
-            # แสดงผลลัพธ์การวินิจฉัย
+            prediction = model.predict(future)
+
             with col2:
                 st.header("ผลการวินิจฉัย")
-                st.metric(label="ความเสี่ยงที่จะเป็น Melanoma", value=f"{risk_percentage:.2f} %")
-
-                if risk_percentage > 50: # สามารถปรับ Threshold ได้ตามความเหมาะสม
+                if prediction[0][0] > 0.5:
                     st.error("ใบไรโช้")
-                    
+                    st.info(f"ผลการวินิจฉัยมั่นใจ: {100 - prediction[0][0]*100:.2f}%")
                 else:
                     st.success("ใบทุเรียน")
+                    st.info(f"ผลการวินิจฉัยมั่นใจ: {prediction[0][0]*100:.2f}%")
                     
 else:
     st.info("กรุณาอัปโหลดรูปภาพที่แถบด้านข้างเพื่อเริ่มการวินิจฉัย")
