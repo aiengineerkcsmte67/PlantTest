@@ -51,8 +51,8 @@ except FileNotFoundError:
     st.stop()
 
 
-st.sidebar.header("อัปโหลดภาพของคุณ")
-uploaded_file = st.sidebar.file_uploader("เลือกไฟล์ภาพ🍀...", type=["jpg", "jpeg", "png"])
+st.header("อัปโหลดภาพของคุณ")
+uploaded_file = st.file_uploader("เลือกไฟล์ภาพ🍀...", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
     # แสดงภาพที่อัปโหลด
