@@ -41,7 +41,7 @@ def load_model_for_app():
     ])
     current_dir = os.path.dirname(os.path.abspath(__file__))
     model_path = os.path.join(current_dir, "..", "model", "Duria-or-nonv1_weights.weights.h5")
-    model.load_weights('model_path')
+    model.load_weights(model_path)
     return model
 
 try:
