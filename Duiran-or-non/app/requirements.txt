@@ -5,3 +5,4 @@ opencv-python-headless
 tensorflow
 scikit-learn
 joblib
+os

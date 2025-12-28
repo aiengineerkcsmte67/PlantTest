@@ -1,4 +1,5 @@
 import streamlit as st
+import os
 import cv2
 import numpy as np
 import joblib
@@ -38,14 +39,15 @@ def load_model_for_app():
         tf.keras.layers.GlobalAveragePooling2D(),
         tf.keras.layers.Dense(1, activation='sigmoid')
     ])
-    
-    model.load_weights('Duria-or-nonv1_weights.weights.h5')
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    model_path = os.path.join(current_dir, "..", "model", "Duria-or-nonv1_weights.weights.h5")
+    model.load_weights('model_path')
     return model
 
 try:
     model = load_model_for_app()
 except FileNotFoundError:
-    st.error(f"ไม่พบไฟล์โมเดล ! กรุณาตรวจสอบว่าได้รันสคริปต์ train_model.py ก่อน")
+    st.error("รายละเอียด Error:", e)
     st.stop()
 
 
