@@ -108,7 +108,7 @@ if uploaded_file is not None:
                         pred = out.argmax(dim=1)
                     class_names = ['ALGAL_LEAF_SPOT', 'ALLOCARIDARA_ATTACK', 'HEALTHY_LEAF', 'LEAF_BLIGHT', 'PHOMOPSIS_LEAF_SPOT']
 
-                    st.success("ผลการวินิจฉัย: ", class_names[pred.item()])
+                    st.success(f"ผลการวินิจฉัย: {class_names[pred.item()]}")
                     # st.info(f"ผลการวินิจฉัยมั่นใจ: {100 - prediction[0][0]*100:.2f}%")
                     
 else:
