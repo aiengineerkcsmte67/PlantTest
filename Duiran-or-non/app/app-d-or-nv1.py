@@ -21,6 +21,7 @@ def extract_glcm_features_from_upload(uploaded_image):
     return image_batch
 
 
+
 #### ส่วนของ ConV
 transforms = transforms.Compose([
     # transforms.ToPILImage(),
