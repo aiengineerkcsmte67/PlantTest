@@ -35,14 +35,14 @@ transforms = transforms.Compose([
 
 Num_Class = 5
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-model = timm.create_model(
+modelx = timm.create_model(
     "convnext_tiny",
     pretrained=True,
     num_classes=Num_Class
 )
-model.load_state_dict(torch.load("Duiran-or-non/model/convnext_modeltestv1.pth", map_location=DEVICE))
-model.to(DEVICE)
-model.eval()
+modelx.load_state_dict(torch.load("Duiran-or-non/model/convnext_modeltestv1.pth", map_location=DEVICE))
+modelx.to(DEVICE)
+modelx.eval()
 
 
 
@@ -104,7 +104,7 @@ if uploaded_file is not None:
                     imagggg = Image.open(uploaded_file).convert("RGB")
                     xx = transforms(imagggg).unsqueeze(0).to(DEVICE)
                     with torch.no_grad():
-                        out = model(xx)
+                        out = modelx(xx)
                         pred = out.argmax(dim=1)
                     class_names = ['ALGAL_LEAF_SPOT', 'ALLOCARIDARA_ATTACK', 'HEALTHY_LEAF', 'LEAF_BLIGHT', 'PHOMOPSIS_LEAF_SPOT']
 
